@@ -22,7 +22,7 @@ namespace CallExternalAPI
             string thumbPrint = File.ReadAllText(@"C:\Users\AnthonyW\Documents\Thumbprint.txt");
 
             // Creates the 'clientRequest' object using the uri string (in this case, a get request)
-            string uri = String.Format("https://127.0.0.1:8904/api/");
+            string uri = String.Format("https://127.0.0.1:8904/api/cardholders");
             HttpWebRequest clientRequest = (HttpWebRequest)WebRequest.Create(uri);
 
             // Adds API key as a header to the request. Note, must also append 'GGL-API-KEY' to the start
@@ -32,16 +32,11 @@ namespace CallExternalAPI
             // Adds certificate to request by passing certificate thumbprint to the 'GetX509Certificate' method
             clientRequest.ClientCertificates.Add(GetX509Certificate(thumbPrint));                                                                
 
-            /* If "Could not establish trust relationship for the SSL/TLS Secure Channel...
-             Authentication Exception: The remote certificate is invalid according to the validation procedure"
-             is thrown, add 'ServicePointManager.ServerCertificateValidationCallback' as shown below...
-             This allows you to bypass the Authentication Exception. Do not do this in production code... */
-            ServicePointManager.ServerCertificateValidationCallback =
-                delegate (object s,
-                X509Certificate certificate, 
-                X509Chain chain,
-                SslPolicyErrors sslPolicyErrors)
-                { return true; };
+            /* If "Could not establish trust relationship for the SSL/TLS Secure Channel - Authentication Exception:
+             The remote certificate is invalid according to the validation procedure" is thrown, add 
+             'ServicePointManager...' as shown below... This allows you to bypass the Authentication Exception 
+             from checking the server certificate. Do not do this in production code... */
+            ServicePointManager.ServerCertificateValidationCallback = delegate{ return true; };
 
             // Although we aren't making a 'GET' request, this is still the method used to retreive a menu of
             // all API item types - e.g. accessZones, alarms, alarmZones, cardholders... 
