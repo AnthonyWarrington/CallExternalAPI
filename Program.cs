@@ -17,15 +17,20 @@ namespace CallExternalAPI
 
         public static void ConnectToAPI ()
         {            
+            // Here we are just reading the key/thumbPrint from .txt files as string values
+            string apiKey = File.ReadAllText(@"C:\Users\AnthonyW\Documents\APIkey.txt");
+            string thumbPrint = File.ReadAllText(@"C:\Users\AnthonyW\Documents\Thumbprint.txt");
+
             // Creates the 'clientRequest' object using the uri string (in this case, a get request)
             string uri = String.Format("https://127.0.0.1:8904/api/");
-            HttpWebRequest clientRequest = (HttpWebRequest)WebRequest.Create(uri);            
+            HttpWebRequest clientRequest = (HttpWebRequest)WebRequest.Create(uri);
 
             // Adds API key as a header to the request. Note, must also append 'GGL-API-KEY' to the start
-            clientRequest.Headers.Add(HttpRequestHeader.Authorization.ToString(), "GGL-API-KEY XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX");
+            // API is in format "GGL-API-KEY XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
+            clientRequest.Headers.Add(HttpRequestHeader.Authorization.ToString(), apiKey);
 
             // Adds certificate to request by passing certificate thumbprint to the 'GetX509Certificate' method
-            clientRequest.ClientCertificates.Add(GetX509Certificate("XXXXXXXXXXXXXX-THUMBPRINT-XXXXXXXXXXXXXX"));
+            clientRequest.ClientCertificates.Add(GetX509Certificate(thumbPrint));                                                                
 
             /* If "Could not establish trust relationship for the SSL/TLS Secure Channel...
              Authentication Exception: The remote certificate is invalid according to the validation procedure"
